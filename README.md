@@ -1,3 +1,6 @@
+[![CodeScene Code Health](https://codescene.io/projects/60103/status-badges/code-health)](https://codescene.io/projects/60103)
+[![CodeScene System Mastery](https://codescene.io/projects/60103/status-badges/system-mastery)](https://codescene.io/projects/60103)
+
 # in10s - A Joyful Learning Experience
 
 in10s is a web application designed to provide an engaging and joyful learning experience for students. Built on Next.js, this open-source platform empowers educators and learners by creating an intuitive and interactive learning environment.
@@ -33,4 +36,6 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Contribution
 
-Contributions to this project are welcome! Help us make in10s the go-to platform for joyful, interactive learning.
+We welcome contributions to this project! Join us in making in10s the leading platform for engaging, interactive learning. 
+
+Feel free to reach out at in10s.id@proton.me to discuss further.
