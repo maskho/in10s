@@ -26,13 +26,22 @@ import { Button } from "./ui/button";
 import { BookOpen, CopyCheck } from "lucide-react";
 import { Separator } from "./ui/separator";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import LoadingQuestions from "./LoadingQuestions";
+import { useToast } from "@/hooks/use-toast";
 
+type Props = {
+  topicParam: string;
+};
 type Input = z.infer<typeof quizCreationSchema>;
 
-const QuizCreation = () => {
+const QuizCreation = ({ topicParam }: Props) => {
   const router = useRouter();
+  const [showLoader, setShowLoader] = React.useState(false);
+  const [finishedLoading, setFinishedLoading] = React.useState(false);
+  const { toast } = useToast();
+
   const { mutate: getQuestions, isPending } = useMutation({
     mutationFn: async ({ amount, topic, type }: Input) => {
       const response = await axios.post("/api/game", {
@@ -48,31 +57,43 @@ const QuizCreation = () => {
     resolver: zodResolver(quizCreationSchema),
     defaultValues: {
       amount: 1,
-      topic: "",
+      topic: topicParam,
       type: "mcq",
     },
   });
 
   function onSubmit(input: Input) {
-    getQuestions(
-      {
-        amount: input.amount,
-        topic: input.topic,
-        type: input.type,
+    setShowLoader(true);
+    getQuestions(input, {
+      onError: (error) => {
+        setShowLoader(false);
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 500) {
+            toast({
+              title: "Error",
+              description:
+                "Terjadi kesalahan pada server. Silahkan coba lagi untuk beberapa saat",
+              variant: "destructive",
+            });
+          }
+        }
       },
-      {
-        onSuccess: ({ gameId }) => {
+
+      onSuccess: ({ gameId }: { gameId: string }) => {
+        setFinishedLoading(true);
+        setTimeout(() => {
           if (form.getValues("type") === "open_ended") {
             router.push(`/play/open-ended/${gameId}`);
           } else {
             router.push(`/play/mcq/${gameId}`);
           }
-        },
-      }
-    );
+        }, 2000);
+      },
+    });
   }
-
   form.watch();
+
+  if (showLoader) return <LoadingQuestions finished={finishedLoading} />;
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">

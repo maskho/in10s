@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/toaster";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
 
@@ -13,11 +14,7 @@ export const metadata: Metadata = {
   description: "Intensify your exam preparation",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body
@@ -28,6 +25,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </Providers>
+        <SpeedInsights />
       </body>
     </html>
   );

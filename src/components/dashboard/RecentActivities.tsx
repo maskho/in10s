@@ -6,20 +6,31 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { prisma } from "@/lib/db";
+import { redirect } from "next/navigation";
+import { getAuthSession } from "@/lib/nextauth";
+import HistoryLog from "../HistoryLog";
 
-type Props = {};
+const RecentActivities = async () => {
+  const session = await getAuthSession();
+  if (!session?.user) {
+    return redirect("/");
+  }
 
-const RecentActivities = (props: Props) => {
+  const gamesCount = await prisma.game.count({
+    where: { userId: session.user.id },
+  });
+
   return (
     <Card className="col-span-4 lg:col-span-3">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Aktivitas Terbaru</CardTitle>
         <CardDescription>
-          Lihat aktivitas terbaru yang terjadi di platform ini!
+          Kamu telah menyelesaikan {gamesCount} kuis
         </CardDescription>
       </CardHeader>
       <CardContent className="max-h-[580px] overflow-scroll">
-        testetst
+        <HistoryLog limit={10} userId={session.user.id} />
       </CardContent>
     </Card>
   );

@@ -17,7 +17,6 @@ export async function POST(req: Request) {
     const { amount, topic, type } = quizCreationSchema.parse(body);
     let questions;
     if (type === "mcq") {
-      console.log("mcq");
       questions = await strict_output(
         "Anda adalah pembuat soal terbaik di topik " +
           topic +
@@ -35,7 +34,6 @@ export async function POST(req: Request) {
           option3: "pilihan 3",
         }
       );
-      console.log(questions);
     } else if (type === "open_ended") {
       questions = await strict_output(
         "Anda adalah pembuat soal terbaik di topik " +

@@ -72,3 +72,9 @@ model Question {
   userAnswer        String?
   game              Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
 }
+
+model TopicCount {
+  id    String @id @default(cuid())
+  topic String @unique
+  count Int
+}

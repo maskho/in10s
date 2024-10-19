@@ -7,20 +7,25 @@ import {
   CardTitle,
 } from "../ui/card";
 import CustomWordCloud from "../CustomWordCloud";
+import { prisma } from "@/lib/db";
 
-type Props = {};
+const HotTopicsCard = async () => {
+  const topics = await prisma.topicCount.findMany({});
+  const formattedTopics = topics.map((topic) => ({
+    text: topic.topic,
+    value: topic.count,
+  }));
 
-const HotTopicsCard = (props: Props) => {
   return (
     <Card className="col-span-4">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Topik Populer </CardTitle>
+        <CardTitle className="text-2xl font-bold">Topik Populer</CardTitle>
         <CardDescription>
-          Lihat topik yang sedang populer di platform ini!
+          Klik pada topik untuk mengerjakan kuis tersedia
         </CardDescription>
       </CardHeader>
       <CardContent className="pl-2">
-        <CustomWordCloud />
+        <CustomWordCloud topics={formattedTopics} />
       </CardContent>
     </Card>
   );
