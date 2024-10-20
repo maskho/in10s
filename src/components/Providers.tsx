@@ -15,7 +15,7 @@ const Providers = ({ children, ...props }: ThemeProviderProps) => {
         defaultTheme="system"
         {...props}
       >
-        <SessionProvider>{children}</SessionProvider>;
+        <SessionProvider>{children}</SessionProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

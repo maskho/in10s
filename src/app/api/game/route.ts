@@ -5,6 +5,19 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import axios from "axios";
 
+type mcqQuestion = {
+  question: string;
+  answer: string;
+  option1: string;
+  option2: string;
+  option3: string;
+};
+
+type openQuestion = {
+  question: string;
+  answer: string;
+};
+
 // POST /api/game
 export async function POST(req: Request) {
   try {
@@ -12,9 +25,7 @@ export async function POST(req: Request) {
     if (!session?.user) {
       return NextResponse.json(
         { error: "You must be logged in to create a game." },
-        {
-          status: 401,
-        }
+        { status: 401 }
       );
     }
     const body = await req.json();
@@ -33,25 +44,13 @@ export async function POST(req: Request) {
       create: { topic, count: 1 },
       update: { count: { increment: 1 } },
     });
-    
+
     const { data } = await axios.post(
       `${process.env.APP_URL as string}/api/questions`,
-      {
-        amount,
-        topic,
-        type,
-      }
+      { amount, topic, type }
     );
 
     if (type === "mcq") {
-      type mcqQuestion = {
-        question: string;
-        answer: string;
-        option1: string;
-        option2: string;
-        option3: string;
-      };
-
       const manyData = data.questions.map((question: mcqQuestion) => {
         const options = [
           question.option1,
@@ -68,14 +67,8 @@ export async function POST(req: Request) {
         };
       });
 
-      await prisma.question.createMany({
-        data: manyData,
-      });
+      await prisma.question.createMany({ data: manyData });
     } else if (type === "open_ended") {
-      type openQuestion = {
-        question: string;
-        answer: string;
-      };
       await prisma.question.createMany({
         data: data.questions.map((question: openQuestion) => {
           return {
@@ -90,20 +83,11 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ gameId: game.id }, { status: 200 });
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { error: error.issues },
-        {
-          status: 400,
-        }
-      );
-    } else {
-      return NextResponse.json(
-        { error: "An unexpected error occurred." },
-        {
-          status: 500,
-        }
-      );
-    }
+    return error instanceof ZodError
+      ? NextResponse.json({ error: error.issues }, { status: 400 })
+      : NextResponse.json(
+          { error: "An unexpected error occurred." },
+          { status: 500 }
+        );
   }
 }
