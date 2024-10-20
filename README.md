@@ -12,7 +12,7 @@ To get started with in10s, follow these steps:
 First, clone the repository and install the dependencies:
 
 ```bash
-git clone [https://github.com/your-repo/in10s.git](https://github.com/maskho/in10s.git)
+git clone https://github.com/maskho/in10s.git
 cd in10s
 bun install
 ```
